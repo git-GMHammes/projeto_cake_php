@@ -1,23 +1,25 @@
-# 🎂 Projeto CakePHP com Docker e NGINX
+# 🎂 Projeto CakePHP com Docker e NGINX - Windows 11
+
+> **📌 Guia otimizado para Windows 11 usando PowerShell**
 
 ## 📋 Estrutura Final do Projeto
 
 ```
-C:\laragon\www\
+C:\laragon\www\projeto_cake_php\
 │
-├── projeto_cake_php/                    # Pasta raiz (já existente)
-│   └── cake_php/                        # Aplicação CakePHP
-│       ├── bin/
-│       ├── config/
+├── projeto_cake_php\                    # Pasta raiz (já existente)
+│   └── cake_php\                        # Aplicação CakePHP
+│       ├── bin\
+│       ├── config\
 │       │   └── app_local.php           # Configurações DB
-│       ├── src/
-│       ├── templates/
-│       ├── webroot/                     # Document root NGINX
-│       ├── vendor/
+│       ├── src\
+│       ├── templates\
+│       ├── webroot\                     # Document root NGINX
+│       ├── vendor\
 │       ├── composer.json
 │       └── ...
 │
-├── nginx/                               # Configurações NGINX
+├── nginx\                               # Configurações NGINX
 │   └── default.conf                     # Virtual host
 │
 └── docker-compose.yml                   # Orquestração Docker
@@ -30,35 +32,95 @@ C:\laragon\www\
 ### **FASE 1: Análise e Backup** 🔍
 
 #### 1.1 - Verificar estrutura atual
-```bash
-cd C:\laragon\www\projeto_cake_php
+
+**PowerShell:**
+```powershell
+# Abrir PowerShell como Administrador
+C:\laragon\www\projeto_cake_php
+Get-ChildItem -Recurse
+```
+
+**CMD (alternativa):**
+```cmd
+C:\laragon\www\projeto_cake_php
 dir /s
 ```
 
 #### 1.2 - Fazer backup completo
-```bash
-# No PowerShell ou CMD
-xcopy "C:\laragon\www\projeto_cake_php" "C:\laragon\www\projeto_cake_php_backup" /E /H /I
+
+**PowerShell:**
+```powershell
+# Backup com PowerShell (recomendado)
+Copy-Item -Path "C:\laragon\www\projeto_cake_php" -Destination "C:\laragon\www\projeto_cake_php_backup" -Recurse -Force
+```
+
+**CMD (alternativa):**
+```cmd
+xcopy "C:\laragon\www\projeto_cake_php" "C:\laragon\www\projeto_cake_php_backup" /E /H /I /Y
 ```
 
 > **⚠️ IMPORTANTE:** Sempre faça backup antes de reorganizar a estrutura!
+
+#### 1.3 - Verificar Docker Desktop
+
+```powershell
+# Verificar se Docker está instalado e rodando
+docker --version
+docker-compose --version
+
+# Verificar containers em execução
+docker ps
+```
+
+Se não tiver Docker instalado, baixe em: https://www.docker.com/products/docker-desktop/
 
 ---
 
 ### **FASE 2: Reorganizar Estrutura CakePHP** 📁
 
 #### 2.1 - Criar pasta interna para o framework
-```bash
-cd C:\laragon\www\projeto_cake_php
+
+**PowerShell:**
+```powershell
+C:\laragon\www\projeto_cake_php
+New-Item -ItemType Directory -Name "cake_php" -Force
+```
+
+**CMD (alternativa):**
+```cmd
+C:\laragon\www\projeto_cake_php
 mkdir cake_php
 ```
 
 #### 2.2 - Opção A: Mover arquivos existentes
 
-Se já possui arquivos CakePHP na raiz, mova tudo para `cake_php/`:
+Se já possui arquivos CakePHP na raiz, mova tudo para `cake_php\`:
 
-```bash
-# Mover todos os arquivos para a pasta cake_php
+**PowerShell:**
+```powershell
+# Navegar até a pasta do projeto
+C:\laragon\www\projeto_cake_php
+
+# Mover pastas
+Move-Item -Path "src" -Destination "cake_php\" -Force
+Move-Item -Path "config" -Destination "cake_php\" -Force
+Move-Item -Path "webroot" -Destination "cake_php\" -Force
+Move-Item -Path "templates" -Destination "cake_php\" -Force
+Move-Item -Path "vendor" -Destination "cake_php\" -Force
+Move-Item -Path "bin" -Destination "cake_php\" -Force
+Move-Item -Path "plugins" -Destination "cake_php\" -Force
+Move-Item -Path "tests" -Destination "cake_php\" -Force
+Move-Item -Path "tmp" -Destination "cake_php\" -Force
+Move-Item -Path "logs" -Destination "cake_php\" -Force
+
+# Mover arquivos
+Move-Item -Path "composer.json" -Destination "cake_php\" -Force
+Move-Item -Path "composer.lock" -Destination "cake_php\" -Force
+```
+
+**CMD (alternativa):**
+```cmd
+C:\laragon\www\projeto_cake_php
 move src cake_php\
 move config cake_php\
 move webroot cake_php\
@@ -73,8 +135,9 @@ move tests cake_php\
 
 #### 2.3 - Opção B: Instalar CakePHP do zero
 
-```bash
-cd C:\laragon\www\projeto_cake_php
+**PowerShell/CMD:**
+```powershell
+C:\laragon\www\projeto_cake_php
 composer create-project --prefer-dist cakephp/app:~5.0 cake_php
 ```
 
@@ -84,7 +147,17 @@ composer create-project --prefer-dist cakephp/app:~5.0 cake_php
 
 #### 3.1 - Criar docker-compose.yml
 
-**Caminho:** `C:\laragon\www\docker-compose.yml`
+**Caminho:** `C:\laragon\www\projeto_cake_php\docker-compose.yml`
+
+**PowerShell (criar arquivo):**
+```powershell
+# Criar arquivo docker-compose.yml
+C:\laragon\www\projeto_cake_php
+New-Item -ItemType File -Name "docker-compose.yml" -Force
+notepad docker-compose.yml
+```
+
+**Conteúdo do arquivo:**
 
 ```yaml
 version: '3.8'
@@ -200,14 +273,31 @@ volumes:
 ### **FASE 4: Configurar NGINX** ⚙️
 
 #### 4.1 - Criar pasta nginx
-```bash
-cd C:\laragon\www
+
+**PowerShell:**
+```powershell
+C:\laragon\www\projeto_cake_php
+New-Item -ItemType Directory -Name "nginx" -Force
+```
+
+**CMD (alternativa):**
+```cmd
+C:\laragon\www\projeto_cake_php
 mkdir nginx
 ```
 
 #### 4.2 - Criar arquivo de configuração
 
 **Caminho:** `C:\laragon\www\nginx\default.conf`
+
+**PowerShell (criar arquivo):**
+```powershell
+C:\laragon\www\projeto_cake_php\nginx
+New-Item -ItemType File -Name "default.conf" -Force
+notepad default.conf
+```
+
+**Conteúdo do arquivo:**
 
 ```nginx
 server {
@@ -303,6 +393,13 @@ server {
 #### 5.1 - Configurar conexão com banco de dados
 
 **Caminho:** `C:\laragon\www\projeto_cake_php\cake_php\config\app_local.php`
+
+**PowerShell (editar arquivo):**
+```powershell
+notepad C:\laragon\www\projeto_cake_php\cake_php\config\app_local.php
+```
+
+**Conteúdo do arquivo:**
 
 ```php
 <?php
@@ -413,25 +510,26 @@ export DB_DATABASE="cakephp_db"
 export APP_FULL_BASE_URL="http://localhost:8080"
 ```
 
-#### 5.3 - Ajustar permissões (Importante!)
+#### 5.3 - Ajustar permissões (Windows)
 
-No **Git Bash** ou **WSL**:
-
-```bash
-cd /c/laragon/www/projeto_cake_php/cake_php
-chmod -R 775 tmp/
-chmod -R 775 logs/
-chmod -R 775 webroot/
-```
-
-No **PowerShell** (Windows):
-
+**PowerShell (executar como Administrador):**
 ```powershell
+# Navegar até a pasta do CakePHP
 cd C:\laragon\www\projeto_cake_php\cake_php
-icacls tmp /grant Everyone:F /T
-icacls logs /grant Everyone:F /T
-icacls webroot /grant Everyone:F /T
+ls
+
+# Dar permissões de escrita para tmp, logs e webroot
+icacls "tmp" /grant Everyone:F /T
+icacls "logs" /grant Everyone:F /T
+icacls "webroot" /grant Everyone:F /T
+
+# Verificar permissões
+icacls "tmp"
+icacls "logs"
+icacls "webroot"
 ```
+
+> **📝 Nota:** O comando `icacls` é o equivalente Windows ao `chmod` do Linux.
 
 ---
 
@@ -439,9 +537,16 @@ icacls webroot /grant Everyone:F /T
 
 #### 6.1 - Subir os containers Docker
 
-```bash
-cd C:\laragon\www
+**PowerShell:**
+```powershell
+# Navegar até a pasta com docker-compose.yml
+C:\laragon\www\projeto_cake_php
+
+# Iniciar containers em background
 docker-compose up -d
+
+# Ou ver logs durante inicialização
+docker-compose up
 ```
 
 **Flags:**
@@ -449,8 +554,16 @@ docker-compose up -d
 
 #### 6.2 - Verificar status dos containers
 
-```bash
+**PowerShell:**
+```powershell
+# Ver status de todos os containers
 docker-compose ps
+
+# Ver containers em execução
+docker ps
+
+# Ver todos os containers (incluindo parados)
+docker ps -a
 ```
 
 **Saída esperada:**
@@ -464,7 +577,8 @@ cakephp_phpmyadmin   phpmyadmin/phpmyadmin  Up
 
 #### 6.3 - Verificar logs
 
-```bash
+**PowerShell:**
+```powershell
 # Todos os containers
 docker-compose logs
 
@@ -475,6 +589,9 @@ docker-compose logs mysql
 
 # Seguir logs em tempo real
 docker-compose logs -f
+
+# Últimas 50 linhas
+docker-compose logs --tail=50
 ```
 
 #### 6.4 - Acessar a aplicação
@@ -492,32 +609,51 @@ Abra seu navegador e acesse:
 
 #### 7.1 - Entrar no container PHP
 
-```bash
+**PowerShell:**
+```powershell
+# Entrar no container PHP via bash
 docker exec -it cakephp_php bash
+
+# Ou via sh (Alpine Linux)
+docker exec -it cakephp_php sh
 ```
 
 #### 7.2 - Instalar extensões PHP necessárias
 
+**Dentro do container:**
 ```bash
-# Dentro do container
+# Instalar extensões
 docker-php-ext-install pdo pdo_mysql intl mbstring
 
-# Reiniciar o PHP-FPM
+# Reiniciar PHP-FPM
 kill -USR2 1
+```
+
+**Ou fazer tudo de uma vez via PowerShell (sem entrar no container):**
+```powershell
+docker exec cakephp_php docker-php-ext-install pdo pdo_mysql intl mbstring
+docker-compose restart php
 ```
 
 #### 7.3 - Instalar dependências do Composer
 
+**PowerShell (executar de fora do container):**
+```powershell
+docker exec -it cakephp_php composer install -d /var/www/html/projeto_cake_php/cake_php
+```
+
+**Ou dentro do container:**
 ```bash
-# Dentro do container
+docker exec -it cakephp_php bash
 cd /var/www/html/projeto_cake_php/cake_php
 composer install
 ```
 
 #### 7.4 - Verificar instalação do CakePHP
 
-```bash
-bin/cake version
+**PowerShell:**
+```powershell
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php version
 ```
 
 **Saída esperada:**
@@ -537,7 +673,11 @@ exit
 
 #### 8.1 - Testar conexão com o banco
 
-Acesse: http://localhost:8080
+**PowerShell:**
+```powershell
+# Testar se CakePHP está funcionando
+Start-Process "http://localhost:8080"
+```
 
 Você deve ver a página inicial do CakePHP com:
 - ✅ **Environment**: OK
@@ -546,47 +686,56 @@ Você deve ver a página inicial do CakePHP com:
 
 #### 8.2 - Verificar logs do NGINX
 
-```bash
+**PowerShell:**
+```powershell
 docker logs cakephp_nginx
+
+# Ou seguir logs em tempo real
+docker logs -f cakephp_nginx
 ```
 
 #### 8.3 - Verificar logs do PHP
 
-```bash
+**PowerShell:**
+```powershell
 docker logs cakephp_php
+
+# Ou seguir logs em tempo real
+docker logs -f cakephp_php
 ```
 
 #### 8.4 - Testar PhpMyAdmin
 
-1. Acesse: http://localhost:8081
-2. **Usuário:** `root`
-3. **Senha:** `root`
-4. Verifique se o banco `cakephp_db` existe
+**PowerShell:**
+```powershell
+Start-Process "http://localhost:8081"
+```
+
+1. **Usuário:** `root`
+2. **Senha:** `root`
+3. Verifique se o banco `cakephp_db` existe
 
 #### 8.5 - Executar comandos CakePHP
 
-```bash
-# Entrar no container
-docker exec -it cakephp_php bash
-
+**PowerShell:**
+```powershell
 # Listar rotas
-cd /var/www/html/projeto_cake_php/cake_php
-bin/cake routes
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php routes
 
 # Criar migration
-bin/cake bake migration CreateUsers
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake migration CreateUsers
 
-# Criar model/controller/views
-bin/cake bake all users
+# Gerar model/controller/views
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake all users
 ```
 
 ---
 
-## 🔧 Comandos Úteis do Docker
+## 🔧 Comandos Úteis do Docker (PowerShell)
 
 ### Gerenciamento básico
 
-```bash
+```powershell
 # Iniciar containers
 docker-compose up -d
 
@@ -599,6 +748,10 @@ docker-compose down
 # Reiniciar containers
 docker-compose restart
 
+# Reiniciar container específico
+docker-compose restart php
+docker-compose restart nginx
+
 # Rebuild containers (após mudanças no Dockerfile)
 docker-compose up -d --build
 
@@ -609,13 +762,19 @@ docker-compose logs -f
 docker-compose logs -f nginx
 docker-compose logs -f php
 docker-compose logs -f mysql
+
+# Ver últimas 100 linhas de log
+docker-compose logs --tail=100
 ```
 
 ### Gerenciamento de volumes
 
-```bash
+```powershell
 # Listar volumes
 docker volume ls
+
+# Inspecionar volume específico
+docker volume inspect projeto_cake_php_mysql_data
 
 # Remover volumes não utilizados
 docker volume prune
@@ -626,88 +785,90 @@ docker-compose down -v
 
 ### Executar comandos nos containers
 
-```bash
+```powershell
 # Entrar no container PHP
 docker exec -it cakephp_php bash
 
 # Entrar no container MySQL
-docker exec -it cakephp_mysql mysql -u root -p
+docker exec -it cakephp_mysql mysql -u root -proot
 
 # Executar comando sem entrar no container
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php version
+
+# Copiar arquivo do Windows para container
+docker cp C:\meu_arquivo.txt cakephp_php:/var/www/html/
+
+# Copiar arquivo do container para Windows
+docker cp cakephp_php:/var/www/html/arquivo.txt C:\destino\
+```
+
+---
+
+## 🎯 Comandos Úteis do CakePHP (PowerShell)
+
+### Bake (Gerador de código)
+
+```powershell
+# Gerar tudo (model, controller, views)
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake all users
+
+# Gerar apenas model
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake model Users
+
+# Gerar apenas controller
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake controller Users
+
+# Gerar apenas views (templates)
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake template Users
+```
+
+### Migrations
+
+```powershell
+# Criar nova migration
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php bake migration CreateUsers
+
+# Executar migrations
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php migrations migrate
+
+# Rollback da última migration
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php migrations rollback
+
+# Ver status das migrations
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php migrations status
+```
+
+### Cache
+
+```powershell
+# Limpar todo o cache
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php cache clear_all
+
+# Limpar cache específico
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php cache clear _cake_model_
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php cache clear _cake_core_
+```
+
+### Debug e Rotas
+
+```powershell
+# Listar todas as rotas
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php routes
+
+# Verificar versão
 docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php version
 ```
 
 ---
 
-## 🎯 Comandos Úteis do CakePHP
-
-### Bake (Gerador de código)
-
-```bash
-# Entrar no container
-docker exec -it cakephp_php bash
-cd /var/www/html/projeto_cake_php/cake_php
-
-# Gerar tudo (model, controller, views)
-bin/cake bake all users
-
-# Gerar apenas model
-bin/cake bake model Users
-
-# Gerar apenas controller
-bin/cake bake controller Users
-
-# Gerar apenas views (templates)
-bin/cake bake template Users
-```
-
-### Migrations
-
-```bash
-# Criar nova migration
-bin/cake bake migration CreateUsers
-
-# Executar migrations
-bin/cake migrations migrate
-
-# Rollback da última migration
-bin/cake migrations rollback
-
-# Ver status das migrations
-bin/cake migrations status
-```
-
-### Cache
-
-```bash
-# Limpar cache
-bin/cake cache clear_all
-
-# Limpar cache específico
-bin/cake cache clear _cake_model_
-bin/cake cache clear _cake_core_
-```
-
-### Debug e Rotas
-
-```bash
-# Listar todas as rotas
-bin/cake routes
-
-# Modo debug
-bin/cake server --debug
-```
-
----
-
-## 🐛 Solução de Problemas Comuns
+## 🐛 Solução de Problemas Comuns (Windows)
 
 ### Problema 1: Erro 502 Bad Gateway
 
 **Causa:** PHP-FPM não está respondendo
 
-**Solução:**
-```bash
+**Solução (PowerShell):**
+```powershell
 # Verificar logs do PHP
 docker logs cakephp_php
 
@@ -715,19 +876,22 @@ docker logs cakephp_php
 docker-compose restart php
 
 # Verificar se o PHP está rodando
-docker exec -it cakephp_php ps aux | grep php
+docker exec cakephp_php ps aux
 ```
 
 ### Problema 2: Erro de permissão em tmp/ ou logs/
 
 **Causa:** Pasta sem permissão de escrita
 
-**Solução:**
-```bash
-# Entrar no container
-docker exec -it cakephp_php bash
+**Solução (PowerShell como Administrador):**
+```powershell
+# Ajustar permissões no Windows
+C:\laragon\www\projeto_cake_php\cake_php
+icacls "tmp" /grant Everyone:F /T
+icacls "logs" /grant Everyone:F /T
 
-# Ajustar permissões
+# Dentro do container
+docker exec -it cakephp_php bash
 cd /var/www/html/projeto_cake_php/cake_php
 chmod -R 777 tmp/
 chmod -R 777 logs/
@@ -739,86 +903,175 @@ chown -R www-data:www-data logs/
 
 **Causa:** Configurações incorretas em app_local.php
 
-**Solução:**
-```bash
+**Solução (PowerShell):**
+```powershell
 # Verificar se o MySQL está rodando
-docker exec -it cakephp_mysql mysql -u root -proot -e "SHOW DATABASES;"
+docker exec cakephp_mysql mysql -u root -proot -e "SHOW DATABASES;"
 
-# Testar conexão manualmente
-docker exec -it cakephp_php bash
-cd /var/www/html/projeto_cake_php/cake_php
-bin/cake server check
+# Testar conexão
+docker exec cakephp_php php /var/www/html/projeto_cake_php/cake_php/bin/cake.php server check
 ```
 
 ### Problema 4: CSS/JS não carrega
 
 **Causa:** Caminho incorreto ou permissões
 
-**Solução:**
-```bash
+**Solução (PowerShell):**
+```powershell
 # Verificar se webroot está acessível
-docker exec -it cakephp_php bash
-ls -la /var/www/html/projeto_cake_php/cake_php/webroot/
+docker exec cakephp_php ls -la /var/www/html/projeto_cake_php/cake_php/webroot/
 
-# Ajustar permissões
-chmod -R 755 /var/www/html/projeto_cake_php/cake_php/webroot/
+# Ajustar permissões no Windows
+C:\laragon\www\projeto_cake_php\cake_php
+icacls "webroot" /grant Everyone:R /T
 ```
 
 ### Problema 5: Container não inicia
 
 **Causa:** Porta já em uso
 
-**Solução:**
-```bash
-# Verificar portas em uso (Windows PowerShell)
+**Solução (PowerShell como Administrador):**
+```powershell
+# Verificar portas em uso
 netstat -ano | findstr :8080
 netstat -ano | findstr :3306
 
-# Matar processo na porta
+# Identificar processo (PID na última coluna)
+Get-Process -Id <PID>
+
+# Matar processo
+Stop-Process -Id <PID> -Force
+
+# Ou usar taskkill
 taskkill /PID <PID> /F
 
-# Ou alterar porta no docker-compose.yml
-ports:
-  - "8090:80"  # Mudar de 8080 para 8090
+# Alternativamente, mudar porta no docker-compose.yml
+# ports:
+#   - "8090:80"  # Mudar de 8080 para 8090
 ```
+
+### Problema 6: Docker Desktop não inicia
+
+**Solução (PowerShell como Administrador):**
+```powershell
+# Reiniciar serviço do Docker
+Restart-Service docker
+
+# Verificar status
+Get-Service docker
+
+# Verificar WSL 2 (necessário para Docker Desktop)
+wsl --list --verbose
+wsl --update
+
+# Verificar Hyper-V (necessário para Docker Desktop)
+Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V
+```
+
+### Problema 7: Erro de permissão ao criar arquivos
+
+**Causa:** Docker Desktop precisa de acesso às pastas
+
+**Solução:**
+1. Abra **Docker Desktop**
+2. Vá em **Settings** > **Resources** > **File Sharing**
+3. Adicione `C:\laragon\www` às pastas compartilhadas
+4. Clique em **Apply & Restart**
 
 ---
 
 ## 📂 Estrutura de Pastas do CakePHP
 
 ```
-cake_php/
-├── bin/                    # Executáveis (cake, cake.php)
-├── config/                 # Arquivos de configuração
+cake_php\
+├── bin\                    # Executáveis (cake, cake.php)
+├── config\                 # Arquivos de configuração
 │   ├── app.php            # Configurações principais
 │   ├── app_local.php      # Configurações locais (DB)
 │   ├── bootstrap.php      # Bootstrap da aplicação
 │   └── routes.php         # Definição de rotas
-├── logs/                   # Logs da aplicação
-├── plugins/                # Plugins instalados
-├── resources/              # Assets não compilados
-├── src/                    # Código fonte da aplicação
-│   ├── Controller/        # Controllers
-│   ├── Model/             # Models (Table e Entity)
-│   ├── View/              # Views e Helpers
+├── logs\                   # Logs da aplicação
+├── plugins\                # Plugins instalados
+├── resources\              # Assets não compilados
+├── src\                    # Código fonte da aplicação
+│   ├── Controller\        # Controllers
+│   ├── Model\             # Models (Table e Entity)
+│   ├── View\              # Views e Helpers
 │   └── Application.php    # Classe principal
-├── templates/              # Templates (views)
-│   ├── layout/            # Layouts
-│   ├── element/           # Elementos reutilizáveis
-│   └── Pages/             # Páginas estáticas
-├── tests/                  # Testes automatizados
-├── tmp/                    # Arquivos temporários e cache
-│   ├── cache/             # Cache da aplicação
-│   └── sessions/          # Sessões
-├── vendor/                 # Dependências do Composer
-├── webroot/                # Document root público
-│   ├── css/               # Arquivos CSS
-│   ├── js/                # Arquivos JavaScript
-│   ├── img/               # Imagens
+├── templates\              # Templates (views)
+│   ├── layout\            # Layouts
+│   ├── element\           # Elementos reutilizáveis
+│   └── Pages\             # Páginas estáticas
+├── tests\                  # Testes automatizados
+├── tmp\                    # Arquivos temporários e cache
+│   ├── cache\             # Cache da aplicação
+│   └── sessions\          # Sessões
+├── vendor\                 # Dependências do Composer
+├── webroot\                # Document root público
+│   ├── css\               # Arquivos CSS
+│   ├── js\                # Arquivos JavaScript
+│   ├── img\               # Imagens
 │   └── index.php          # Front controller
 ├── .gitignore
 ├── composer.json           # Dependências PHP
 └── composer.lock
+```
+
+---
+
+## 🪟 Comandos PowerShell Avançados
+
+### Scripts úteis
+
+```powershell
+# Script para limpar Docker (limpa_docker.ps1)
+function Limpar-Docker {
+    Write-Host "Parando containers..."
+    docker-compose down
+    
+    Write-Host "Removendo containers órfãos..."
+    docker container prune -f
+    
+    Write-Host "Removendo imagens não utilizadas..."
+    docker image prune -a -f
+    
+    Write-Host "Removendo volumes não utilizados..."
+    docker volume prune -f
+    
+    Write-Host "Removendo networks não utilizadas..."
+    docker network prune -f
+    
+    Write-Host "Limpeza concluída!"
+}
+
+# Executar: Limpar-Docker
+```
+
+```powershell
+# Script para resetar ambiente (reset_ambiente.ps1)
+function Reset-Ambiente {
+    Write-Host "Parando containers..."
+    docker-compose down -v
+    
+    Write-Host "Removendo pasta tmp e logs..."
+    Remove-Item -Path "C:\laragon\www\projeto_cake_php\cake_php\tmp\*" -Recurse -Force
+    Remove-Item -Path "C:\laragon\www\projeto_cake_php\cake_php\logs\*" -Recurse -Force
+    
+    Write-Host "Recriando pastas..."
+    New-Item -ItemType Directory -Path "C:\laragon\www\projeto_cake_php\cake_php\tmp\cache" -Force
+    New-Item -ItemType Directory -Path "C:\laragon\www\projeto_cake_php\cake_php\tmp\sessions" -Force
+    
+    Write-Host "Ajustando permissões..."
+    icacls "C:\laragon\www\projeto_cake_php\cake_php\tmp" /grant Everyone:F /T
+    icacls "C:\laragon\www\projeto_cake_php\cake_php\logs" /grant Everyone:F /T
+    
+    Write-Host "Iniciando containers..."
+    docker-compose up -d
+    
+    Write-Host "Ambiente resetado!"
+}
+
+# Executar: Reset-Ambiente
 ```
 
 ---
@@ -828,15 +1081,27 @@ cake_php/
 ### Documentação Oficial
 
 - **CakePHP:** https://book.cakephp.org/5/pt/
-- **Docker:** https://docs.docker.com/
+- **Docker Desktop (Windows):** https://docs.docker.com/desktop/windows/
+- **Docker Compose:** https://docs.docker.com/compose/
 - **NGINX:** https://nginx.org/en/docs/
 - **PHP-FPM:** https://www.php.net/manual/pt_BR/install.fpm.php
+- **PowerShell:** https://docs.microsoft.com/pt-br/powershell/
 
-### Tutoriais Recomendados
+### Ferramentas Recomendadas para Windows
 
-- [CakePHP 5 - Guia Completo](https://book.cakephp.org/5/pt/intro.html)
-- [Docker Compose - Tutorial](https://docs.docker.com/compose/gettingstarted/)
-- [NGINX + PHP-FPM Setup](https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/)
+- **Windows Terminal:** https://aka.ms/terminal
+- **Visual Studio Code:** https://code.visualstudio.com/
+- **Docker Desktop:** https://www.docker.com/products/docker-desktop/
+- **Git for Windows:** https://gitforwindows.org/
+- **Composer:** https://getcomposer.org/download/
+
+### Extensões VSCode Úteis
+
+- Docker
+- PHP Intelephense
+- CakePHP Snippets
+- GitLens
+- PowerShell
 
 ---
 
@@ -844,10 +1109,15 @@ cake_php/
 
 Use esta lista para acompanhar o progresso:
 
+- [ ] **Pré-requisitos:**
+  - [ ] Docker Desktop instalado
+  - [ ] WSL 2 configurado (se necessário)
+  - [ ] Composer instalado
+  - [ ] PowerShell 5.1+ ou Windows Terminal
 - [ ] **Fase 1:** Backup realizado
 - [ ] **Fase 2:** Estrutura CakePHP reorganizada
 - [ ] **Fase 3:** `docker-compose.yml` criado
-- [ ] **Fase 4:** `nginx/default.conf` configurado
+- [ ] **Fase 4:** `nginx\default.conf` configurado
 - [ ] **Fase 5:** `app_local.php` atualizado
 - [ ] **Fase 6:** Containers Docker iniciados
 - [ ] **Fase 7:** Dependências PHP instaladas
@@ -856,6 +1126,39 @@ Use esta lista para acompanhar o progresso:
 - [ ] ✅ PhpMyAdmin acessível em http://localhost:8081
 - [ ] ✅ Banco de dados conectado
 - [ ] ✅ Permissões ajustadas (tmp, logs, webroot)
+
+---
+
+## 💡 Dicas Importantes para Windows
+
+### Docker Desktop
+
+1. **Certifique-se que Docker Desktop está rodando** antes de executar comandos
+2. **Compartilhe drives** nas configurações do Docker Desktop
+3. **WSL 2** é recomendado para melhor performance
+4. **Hyper-V** deve estar habilitado (Windows 10/11 Pro)
+
+### PowerShell
+
+1. **Execute como Administrador** para comandos de permissão
+2. **Windows Terminal** oferece melhor experiência que CMD
+3. Use **Tab** para autocompletar comandos
+4. `Ctrl+C` para cancelar comandos em execução
+
+### Portas
+
+Se as portas padrão estiverem em uso:
+- **8080** → pode mudar para 8090, 8000, 3000
+- **3306** → pode mudar para 3307, 3308
+- **8081** → pode mudar para 8082, 9000
+
+### Performance
+
+Para melhor performance no Windows:
+1. Use **WSL 2** ao invés de Hyper-V
+2. Coloque projetos dentro do **filesystem WSL** (mais rápido)
+3. **Desabilite antivírus** na pasta do projeto (pode deixar lento)
+4. **Aumente RAM** dedicada ao Docker Desktop (Settings > Resources)
 
 ---
 
@@ -876,6 +1179,8 @@ Se encontrar algum problema ou tiver sugestões de melhorias:
 - **Performance:** Para melhor performance em produção, considere usar volumes nomeados ao invés de bind mounts
 - **SSL/HTTPS:** Para ambiente de produção, configure certificados SSL
 - **Backup:** Sempre faça backup regular do banco de dados
+- **Firewall:** Pode ser necessário liberar portas no firewall do Windows
+- **Antivírus:** Alguns antivírus podem bloquear Docker, adicione exceção se necessário
 
 ---
 
@@ -884,11 +1189,23 @@ Se encontrar algum problema ou tiver sugestões de melhorias:
 Para dúvidas ou problemas:
 
 - Verifique a seção **Solução de Problemas**
-- Consulte os logs dos containers
+- Consulte os logs dos containers (`docker logs`)
 - Acesse a documentação oficial do CakePHP
+- Verifique logs do Docker Desktop
 
 ---
 
-**Desenvolvido com ❤️ usando CakePHP, Docker e NGINX**
+## 🔗 Links Rápidos
+
+- **CakePHP Docs:** https://book.cakephp.org/5/pt/
+- **Docker Windows:** https://docs.docker.com/desktop/windows/
+- **PowerShell Docs:** https://docs.microsoft.com/powershell/
+
+---
+
+**Desenvolvido com ❤️ usando CakePHP, Docker e NGINX no Windows 11**
 
 **Última atualização:** Janeiro 2026
+
+**Sistema Operacional:** Windows 11  
+**Shell:** PowerShell 5.1+
